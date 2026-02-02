@@ -79,7 +79,11 @@ class ImagickDriver implements ImageDriver
         $this->optimize = false;
 
         $this->image = new Imagick($path);
-        $this->exif = $this->image->getImageProperties('exif:*');
+
+        foreach ($this->image->getImageProperties('exif:*') as $key => $value) {
+            $normalizedKey = substr($key, strlen('exif:'));
+            $this->exif[$normalizedKey] = $value;
+        }
 
         if ($autoRotate) {
             $this->autoRotate();
